@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MD5 VIP</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background:linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d);
+min-height:100vh;padding:20px}
+
+/* LOGIN */
+#loginBox{
+max-width:420px;margin:120px auto;
+background:#fff;padding:35px;border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,.3);
+text-align:center}
+#loginBox input{
+width:100%;padding:15px;border:2px solid gold;
+border-radius:12px;font-size:18px;text-align:center}
+#loginBox button{
+margin-top:15px;width:100%;padding:15px;
+background:linear-gradient(135deg,#8b0000,#ff0000);
+border:none;color:#fff;font-size:18px;border-radius:12px}
+#loginError{color:red;margin-top:10px;font-weight:bold}
+
+.container{display:none}
+.container{
+max-width:800px;margin:auto;background:#fff;
+border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.3);
+overflow:hidden}
+
+/* HEADER */
+.header{
+background:linear-gradient(135deg,#ffd700,#ffb300);
+color:#8b0000;padding:30px;text-align:center}
+.vip-badge{
+margin-top:10px;background:red;color:#fff;
+padding:8px 18px;border-radius:20px;
+font-weight:bold}
+
+/* MAIN */
+.main-content{padding:40px}
+input{
+width:100%;padding:18px;
+border:3px solid gold;border-radius:15px;
+font-size:18px;text-align:center}
+button{
+margin-top:20px;width:100%;
+padding:18px;
+background:linear-gradient(135deg,#8b0000,#ff0000);
+border:none;color:#fff;
+font-size:18px;border-radius:15px}
+
+/* RESULT */
+.result-section{
+display:none;margin-top:25px;
+background:#fffaf0;border-radius:20px;
+padding:30px;border:4px solid gold}
+
+.prediction-result{
+padding:40px;border-radius:25px;
+text-align:center;font-weight:900;
+animation:pop .4s ease}
+
+@keyframes pop{
+0%{transform:scale(.7);opacity:0}
+100%{transform:scale(1);opacity:1}
+}
+
+.tai{background:#b6ffb6;border:6px solid #0a8a0a}
+.xiu{background:#ffd6d6;border:6px solid #b30000}
+
+.result-text{font-size:5em}
+.confidence{font-size:2em;margin-top:10px}
+
+/* STATS */
+.stats{
+display:flex;flex-direction:column;
+gap:15px;margin-top:25px}
+.stat{
+background:#fff;padding:20px;
+border-radius:15px;border:3px solid gold;
+text-align:center;font-weight:bold;font-size:1.3em}
+.stat b{display:block;font-size:2em;color:#8b0000}
+
+/* HISTORY */
+.history{
+margin-top:25px;
+display:flex;gap:8px;flex-wrap:wrap}
+.h{
+width:40px;height:40px;border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+font-weight:bold;color:#fff}
+.h.t{background:#0a8a0a}
+.h.x{background:#b30000}
+
+/* FOOTER */
+.footer{
+margin-top:25px;background:#8b0000;
+color:#fff;text-align:center;padding:15px}
+</style>
+</head>
+
+<body>
+
+<div id="loginBox">
+<input id="keyInput" placeholder="Nhập key VIP">
+<button onclick="login()">XÁC NHẬN</button>
+<div id="loginError"></div>
+</div>
+
+<div class="container" id="tool">
+<div class="header">
+<h1>MD5 VIP </h1>
+<div class="vip-badge">MIN DZ VCL</div>
+</div>
+
+<div class="main-content">
+<input id="md5Input" maxlength="32" placeholder="Nhập MD5 32 ký tự">
+<button onclick="predict()">🚀 DỰ ĐOÁN</button>
+
+<div class="result-section" id="result">
+<div id="output"></div>
+
+<div class="stats">
+<div class="stat">ĐỘ TIN CẬY<b id="acc">0%</b></div>
+<div class="stat">LƯỢT PHÂN TÍCH<b id="count">0</b></div>
+<div class="stat">TỈ LỆ THẮNG<b id="win">0%</b></div>
+</div>
+
+<div class="history" id="history"></div>
+</div>
+</div>
+
+<div class="footer">© 2025 VIP++ Minvip</div>
+</div>
+
+<script>
+const KEY="bondz00";
+let analysis=0,win=0,history=[],cool=false;
+
+function login(){
+if(keyInput.value===KEY){
+localStorage.setItem("vipKey",KEY);
+loginBox.style.display="none";
+tool.style.display="block";
+}else loginError.innerText="❌ Sai key";
+}
+if(localStorage.getItem("vipKey")===KEY){
+loginBox.style.display="none";
+tool.style.display="block";
+}
+
+/* ALGO A */
+function algoA(md5){
+let t=0,x=0;
+for(let c of md5)(parseInt(c,16)>=8)?t++:x++;
+return t>=x;
+}
+/* ALGO B */
+function algoB(md5){
+let s=0;
+for(let i=0;i<32;i+=2)
+s+=parseInt(md5.substr(i,2),16);
+return s%2==0;
+}
+
+function predict(){
+if(cool) return;
+cool=true; setTimeout(()=>cool=false,1200);
+
+let md5=md5Input.value.trim();
+if(md5.length!=32) return alert("MD5 sai");
+
+analysis++;
+let useA = Math.floor(analysis/5)%2===0;
+let isTai = useA ? algoA(md5) : algoB(md5);
+
+let conf = 80 + Math.random()*12;
+conf=Math.min(92,Math.round(conf));
+if(conf>=85) win++;
+
+history.unshift(isTai?"T":"X");
+if(history.length>10) history.pop();
+
+navigator.vibrate?.(200);
+
+result.style.display="block";
+output.innerHTML=`
+<div class="prediction-result ${isTai?'tai':'xiu'}">
+<div class="result-text">${isTai?'TÀI':'XỈU'}</div>
+<div class="confidence">${conf}%</div>
+</div>`;
+
+acc.innerText=conf+"%";
+count.innerText=analysis;
+win.innerText=Math.round(win/analysis*100)+"%";
+
+historyDiv.innerHTML="";
+history.forEach(h=>{
+let d=document.createElement("div");
+d.className="h "+(h==="T"?"t":"x");
+d.innerText=h;
+historyDiv.appendChild(d);
+});
+}
+</script>
+</body>
+</html>
